@@ -1,0 +1,41 @@
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: #161616;
+  color: #eee;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#container span+span {
+  padding-left: 8px;
+}
+
+#main .major {
+  font-size: 3em;
+}
+
+#sub .major {
+  font-size: 2em;
+}
+
+.long  { color: #5474d3; }
+.short { color: #74d354; }
+
