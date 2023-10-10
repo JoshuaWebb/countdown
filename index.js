@@ -1,17 +1,47 @@
 let container;
 let main;
-let targetDate = new Date(2023, 11, 11);
+let targetDate = new Date(2023, 11, 8, 17, 0);
 let dayMs = 1000 * 60 * 60 * 24;
+let lunchStartMinutes = 12*60;
+let lunchDurationMinutes = 30;
+let lunchEndMinutes = lunchStartMinutes + lunchDurationMinutes;
+let clockOffMinutes = 17*60;
 
 function tick() {
   let now = new Date();
-  //let now = new Date(2023, 9, 9, 11, 45);
+  //now = new Date(2023, 11, 8, 16, 45);
 
-  // TODO: When work days + hours is 0.
   let diffMs = targetDate - now;
   if (diffMs <= 0) {
     main.textContent = "🎉";
     return true;
+  }
+
+  // TODO: Cache days, only recalc hours / rolling window days if it changes ?
+  let workDays = 0;
+  let workHours = 0;
+  if (!(now.getDay() == 0 || now.getDay() == 6)) {
+    let h = now.getHours();
+    let m = h*60 + now.getMinutes();
+    let workMinutes;
+    if (m < lunchEndMinutes) {
+      // TODO: calc/derive 4.5
+      workMinutes = Math.max(lunchStartMinutes - m, 0) + 4.5*60;
+    } else {
+      workMinutes = clockOffMinutes - m;
+    }
+    workHours = (workMinutes/60).toFixed(2);
+  }
+
+  let d = new Date(now);
+  d.setDate(now.getDate() + 1);
+  
+  while (d < targetDate) {
+    let day = d.getDay();
+    if (!(day == 0 || day == 6)) {
+      workDays += 1;
+    }
+    d.setDate(d.getDate() + 1);
   }
 
   let remainingMs = diffMs;
@@ -24,29 +54,8 @@ function tick() {
     container.className = "short";
   }
 
-  // TODO: Cache days, only recalc hours / rolling window days if it changes ?
-  let workDays = 0;
-  let workHours = 0;
-  if (!(now.getDay() == 0 || now.getDay() == 6)) {
-    let h = now.getHours();
-    let m = h*60 + now.getMinutes();
-    let workMinutes;
-    if (m < 12.5*60) {
-      workMinutes = Math.max(12*60 - m, 0) + 4.5*60;
-    } else {
-      workMinutes = 17*60 - m;
-    }
-    workHours = (workMinutes/60).toFixed(2);
-  }
-  let d = new Date();
-  d.setDate(now.getDate() + 1);
-  
-  while (d < targetDate) {
-    let day = d.getDay();
-    if (!(day == 0 || day == 6)) {
-      workDays += 1;
-    }
-    d.setDate(d.getDate() + 1);
+  if (wholeDays < 1) {
+    // TODO: Hours as major
   }
 
   let wholeHours = ~~(remainingMs / (1000*60*60));
