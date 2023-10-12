@@ -1,20 +1,35 @@
 let container;
+let counts;
 let main;
+let sub;
+let celebration;
 let targetDate = new Date(2023, 11, 8, 17, 0);
+// let targetDate = new Date(2023, 9, 11, 17, 0);
 let dayMs = 1000 * 60 * 60 * 24;
 let lunchStartMinutes = 12*60;
 let lunchDurationMinutes = 30;
 let lunchEndMinutes = lunchStartMinutes + lunchDurationMinutes;
-let clockOffMinutes = 17*60;
+let clockOnMinutes = 9*60;
+let clockOnDurationMinutes = 7.5*60;
+let clockOffMinutes = clockOnMinutes + clockOnDurationMinutes + lunchDurationMinutes;
 
 function tick() {
   let now = new Date();
-  //now = new Date(2023, 11, 8, 10, 45);
+  //now = new Date(2023, 11, 8, 16, 58);
+  //now = new Date(Date.now() + 5007200000);
+
+  // Strip off seconds and millis as they are below the resolution we care about
+  now.setMilliseconds(0);
+  now.setSeconds(0);
 
   let diffMs = targetDate - now;
   if (diffMs <= 0) {
-    main.textContent = "🎉";
+    counts.className = "hidden";
+    celebration.className = "shown";
     return true;
+  } else {
+    counts.className = "shown";
+    celebration.className = "hidden";
   }
 
   // TODO: Cache days, only recalc hours / rolling window days if it changes ?
@@ -25,12 +40,15 @@ function tick() {
     let h = now.getHours();
     let m = h*60 + now.getMinutes();
     if (m < lunchEndMinutes) {
-      // TODO: calc/derive 4.5
-      workMinutesTotal = Math.max(lunchStartMinutes - m, 0) + 4.5*60;
+      workMinutesTotal = Math.max(lunchStartMinutes - m, 0) + clockOffMinutes - lunchEndMinutes;
     } else {
       workMinutesTotal = clockOffMinutes - m;
     }
     workHours = (workMinutesTotal/60).toFixed(2);
+  }
+  if (workMinutesTotal >= clockOnDurationMinutes) {
+    workHours = 0;
+    workDays = 1;
   }
 
   let d = new Date(now);
@@ -54,6 +72,7 @@ function tick() {
     container.className = "short";
   }
 
+  // TODO: pluralisation
   let wholeHours = ~~(remainingMs / (1000*60*60));
   remainingMs -= wholeHours * 1000*60*60;
   if (wholeDays < 1) {
@@ -97,7 +116,10 @@ function tick() {
 
 function init() {
   container = document.getElementById("container");
+  counts = document.getElementById("counts");
   main = document.getElementById("main");
+  sub = document.getElementById("sub");
+  celebration = document.getElementById("celebration");
   if (!tick()) {
     let tickInterval = setInterval(() => {
       if (tick()) {

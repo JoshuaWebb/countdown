@@ -18,7 +18,7 @@ body {
   justify-content: center;
 }
 
-#container {
+#counts {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,6 +26,26 @@ body {
 
 #container span+span {
   padding-left: 8px;
+}
+
+#celebration {
+  font-size: 5em;
+}
+
+.hidden,
+#counts.hidden {
+  display: none;
+}
+
+.shown {
+  display: block;
+}
+
+.major {
+  text-align: right;
+}
+.minor {
+  text-align: left;
 }
 
 #main .major {
