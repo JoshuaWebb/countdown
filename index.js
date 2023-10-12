@@ -4,7 +4,7 @@ let main;
 let sub;
 let celebration;
 let targetDate = new Date(2023, 11, 8, 17, 0);
-// let targetDate = new Date(2023, 9, 11, 17, 0);
+//targetDate = new Date(2023, 9, 13, 17, 0);
 let dayMs = 1000 * 60 * 60 * 24;
 let lunchStartMinutes = 12*60;
 let lunchDurationMinutes = 30;
@@ -72,46 +72,63 @@ function tick() {
     container.className = "short";
   }
 
-  // TODO: pluralisation
+  // TODO: rounding... 9:01 should still show ~8 hours on realtime
   let wholeHours = ~~(remainingMs / (1000*60*60));
   remainingMs -= wholeHours * 1000*60*60;
   if (wholeDays < 1) {
     let wholeMinutes = ~~(remainingMs / (1000*60))
 
-    main.innerHTML = `<span class="major">${wholeHours} Hours</span>`;
+    main.innerHTML = `<span class="major">${plu(wholeHours, "hour")}</span>`;
     if (wholeMinutes > 0) {
       let minor = document.createElement("span")
       minor.class = "minor";
-      minor.textContent =  `${wholeMinutes} Minutes`;
+      minor.textContent = plu(wholeMinutes, "minute");
       main.appendChild(minor);
     }
 
     workHours = ~~(workMinutesTotal/60);
     let workMinutes = workMinutesTotal - workHours*60;
-    sub.innerHTML = `<span class="major">${workHours} Hours</span>`;
+    sub.innerHTML = `<span class="major">${plu(workHours, "hour")}</span>`;
     let minor = document.createElement("span")
     minor.class = "minor";
-    minor.textContent =  `${workMinutes} Minutes`;
+    minor.textContent = plu(workMinutes, "minute");
     sub.appendChild(minor);
   } else {
-    main.innerHTML = `<span class="major">${wholeDays} Days</span>`;
+    main.innerHTML = `<span class="major">${plu(wholeDays, "day")}</span>`;
     if (wholeHours > 0) {
       let minor = document.createElement("span")
       minor.class = "minor";
-      minor.textContent =  `${wholeHours} Hours`;
+      minor.textContent = plu(wholeHours, "hour");
       main.appendChild(minor);
     }
 
-    sub.innerHTML = `<span class="major">${workDays} Days</span>`;
+    sub.innerHTML = `<span class="major">${plu(workDays, "day")}</span>`;
     if (workHours > 0) {
       let minor = document.createElement("span")
       minor.class = "minor";
-      minor.textContent =  `${workHours} Hours`;
+      minor.textContent = plu(workHours, "hour");
       sub.appendChild(minor);
     }
   }
 
   return false;
+}
+
+function plu(value, unit) {
+  if (value == 1) {
+    switch(unit) {
+    case "hour": return `${value} Hour`;
+    case "minute": return `${value} Minute`;
+    case "day": return `${value} Day`;
+    }
+  } else {
+    switch(unit) {
+    case "hour": return `${value} Hours`;
+    case "minute": return `${value} Minutes`;
+    case "day": return `${value} Days`;
+    }
+  }
+  return "unhandled";
 }
 
 function init() {
