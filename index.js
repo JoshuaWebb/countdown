@@ -3,7 +3,7 @@ let counts;
 let main;
 let sub;
 let celebration;
-let targetDate = new Date(2023, 11, 8, 17, 0);
+let targetDate = new Date(2024, 11, 8, 17, 0);
 //targetDate = new Date(2023, 9, 13, 17, 0);
 let dayMs = 1000 * 60 * 60 * 24;
 let lunchStartMinutes = 12*60;
