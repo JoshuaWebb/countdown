@@ -55,6 +55,9 @@ function tick() {
   let d = new Date(now);
   d.setDate(now.getDate() + 1);
   d.setHours(0);
+  d.setMinutes(0);
+  d.setSeconds(0);
+  d.setMilliseconds(0);
 
   while (d <= targetDate) {
     let day = d.getDay();
