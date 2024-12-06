@@ -17,7 +17,7 @@ function tick() {
   let now = new Date();
   //now = new Date(2023, 11, 8, 16, 58);
   //now = new Date(Date.now() + 5007200000);
-  //now = new Date(Date.now() - 3200000);
+  now = new Date(Date.now() - 17200000);
 
   // Strip off seconds and millis as they are below the resolution we care about
   now.setMilliseconds(0);
@@ -79,24 +79,40 @@ function tick() {
 
   // TODO: rounding... 9:01 should still show ~8 hours on realtime
   let wholeHours = ~~(remainingMs / (1000*60*60));
+  let wholeMinutesTotal = remainingMs / (1000*60);
   remainingMs -= wholeHours * 1000*60*60;
   let wholeMinutes = ~~(remainingMs / (1000*60))
   if (wholeDays < 1) {
-    main.innerHTML = `<span class="major">${plu(wholeHours, "hour")}</span>`;
-    if (wholeMinutes > 0) {
-      let minor = document.createElement("span")
-      minor.class = "minor";
-      minor.textContent = plu(wholeMinutes, "minute");
-      main.appendChild(minor);
-    }
+    if (wholeHours <= 0) {
+      main.innerHTML = `<span class="major">${plu(wholeMinutes, "minute")}</span>`;
+    } else {
+      if (wholeMinutesTotal == workMinutesTotal) {
+        main.innerHTML = `<span class="major">${plu(wholeHours, "hour")}</span>`;
+        if (wholeMinutes > 0) {
+          let minor = document.createElement("span")
+          minor.class = "minor";
+          minor.textContent = plu(wholeMinutes, "minute");
+          main.appendChild(minor);
+        }
+      } else {
+        main.innerHTML = `<span class="major">${plu(wholeHours, "hour")}</span>`;
+        if (wholeMinutes > 0) {
+          let minor = document.createElement("span")
+          minor.class = "minor";
+          minor.textContent = plu(wholeMinutes, "minute");
+          main.appendChild(minor);
+        }
 
-    workHours = ~~(workMinutesTotal/60);
-    let workMinutes = workMinutesTotal - workHours*60;
-    sub.innerHTML = `<span class="major">${plu(workHours, "hour")}</span>`;
-    let minor = document.createElement("span")
-    minor.class = "minor";
-    minor.textContent = plu(workMinutes, "minute");
-    sub.appendChild(minor);
+        workHours = ~~(workMinutesTotal/60);
+        let workMinutes = workMinutesTotal - workHours*60;
+
+        sub.innerHTML = `<span class="major">${plu(workHours, "hour")}</span>`;
+        let minor = document.createElement("span")
+        minor.class = "minor";
+        minor.textContent = plu(workMinutes, "minute");
+        sub.appendChild(minor);
+      }
+    }
   } else {
     main.innerHTML = `<span class="major">${plu(wholeDays, "day")}</span>`;
     let displayHours = ~~Math.round(wholeHours + wholeMinutes/60);
