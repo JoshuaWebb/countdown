@@ -17,7 +17,7 @@ function tick() {
   let now = new Date();
   //now = new Date(2023, 11, 8, 16, 58);
   //now = new Date(Date.now() + 5007200000);
-  now = new Date(Date.now() - 17200000);
+  //now = new Date(Date.now() - 17200000);
 
   // Strip off seconds and millis as they are below the resolution we care about
   now.setMilliseconds(0);
