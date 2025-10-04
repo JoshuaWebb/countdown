@@ -4,7 +4,6 @@ let main;
 let sub;
 let celebration;
 let targetDate = new Date(2025, 11, 5, 17, 0);
-//targetDate = new Date(2023, 9, 13, 17, 0);
 let dayMs = 1000 * 60 * 60 * 24;
 let lunchStartMinutes = 12*60;
 let lunchDurationMinutes = 30;
@@ -12,6 +11,12 @@ let lunchEndMinutes = lunchStartMinutes + lunchDurationMinutes;
 let clockOnMinutes = 9*60;
 let clockOnDurationMinutes = 7.5*60;
 let clockOffMinutes = clockOnMinutes + clockOnDurationMinutes + lunchDurationMinutes;
+
+const urlParams = new URLSearchParams(window.location.search);
+const urlTargetDate = urlParams.get('targetDate');
+if (urlTargetDate) {
+  targetDate = new Date(Date.parse(urlTargetDate));
+}
 
 function tick() {
   let now = new Date();
