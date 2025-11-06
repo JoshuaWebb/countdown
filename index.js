@@ -45,6 +45,14 @@ function tick() {
   if (!(now.getDay() == 0 || now.getDay() == 6)) {
     let h = now.getHours();
     let m = h*60 + now.getMinutes();
+
+    // Once we hit less than a day, switch to hours remaining.
+    if (targetDate - now < dayMs) {
+      if (m > clockOffMinutes || m < clockOnMinutes) {
+        m = clockOnMinutes;
+      }
+    }
+
     if (m < lunchEndMinutes) {
       workMinutesTotal = Math.max(lunchStartMinutes - m, 0) + clockOffMinutes - lunchEndMinutes;
     } else {
@@ -119,8 +127,12 @@ function tick() {
       }
     }
   } else {
-    main.innerHTML = `<span class="major">${plu(wholeDays, "day")}</span>`;
     let displayHours = ~~Math.round(wholeHours + wholeMinutes/60);
+    if (displayHours == 24) {
+      displayHours = 0;
+      wholeDays += 1;
+    }
+    main.innerHTML = `<span class="major">${plu(wholeDays, "day")}</span>`;
     if (displayHours > 0) {
       let minor = document.createElement("span")
       minor.class = "minor";
